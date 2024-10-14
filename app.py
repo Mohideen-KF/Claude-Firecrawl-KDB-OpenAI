@@ -1,5 +1,24 @@
 import streamlit as st
 import os
+import sys
+import subprocess
+
+# Install required packages
+def install_packages():
+    packages = [
+        "firecrawl-py",
+        "llama_index",
+        "kdbai_client",
+        "llama-index-vector-stores-kdbai",
+        "openai"
+    ]
+    for package in packages:
+        subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
+# Run package installation
+install_packages()
+
+# Now import the required modules
 from firecrawl import FirecrawlApp
 import kdbai_client as kdbai
 from llama_index.core import VectorStoreIndex, Document, StorageContext
@@ -16,7 +35,7 @@ def load_or_create_index():
     # Check if the index already exists
     if 'index' not in st.session_state:
         # Firecrawl setup and crawling
-        firecrawl_api_key = os.getenv('FIRECRAWL_API_KEY')
+        firecrawl_api_key = st.secrets["fc-bae517a8517d414a8969c0aeda3f611e"]
         app = FirecrawlApp(api_key=firecrawl_api_key)
         crawl_result = app.crawl_url(
             'https://code.kx.com/kdbai',
@@ -33,8 +52,8 @@ def load_or_create_index():
         )
 
         # KDB.AI setup
-        kdbai_endpoint = os.getenv('https://cloud.kdb.ai/instance/dkdtpq6n42')
-        kdbai_api_key = os.getenv('cbe0f7f340-eQYoca1WSX398PJj8ehUPx3jvrA+uHNQEOCjZQ9OTEjNE5vBugGpLofoQeIQzJ8su504dLHdPazEwnOH')
+        kdbai_endpoint = st.secrets["https://cloud.kdb.ai/instance/dkdtpq6n42"]
+        kdbai_api_key = st.secrets["cbe0f7f340-eQYoca1WSX398PJj8ehUPx3jvrA+uHNQEOCjZQ9OTEjNE5vBugGpLofoQeIQzJ8su504dLHdPazEwnOH"]
         session = kdbai.Session(endpoint=kdbai_endpoint, api_key=kdbai_api_key)
         
         schema = {
@@ -61,7 +80,7 @@ def load_or_create_index():
         vector_store = KDBAIVectorStore(table)
         storage_context = StorageContext.from_defaults(vector_store=vector_store)
         
-        openai_api_key = os.getenv('OPENAI_API_KEY')
+        openai_api_key = st.secrets["OPENAI_API_KEY"]
         index = VectorStoreIndex.from_documents(
             documents,
             storage_context=storage_context,
