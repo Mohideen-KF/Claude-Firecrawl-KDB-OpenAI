@@ -6,7 +6,7 @@ from llama_index.vector_stores.kdbai import KDBAIVectorStore
 from llama_index.embeddings.openai import OpenAIEmbedding
 
 # Firecrawl setup and crawling
-app = FirecrawlApp(api_key='your-firecrawl-api-key')
+app = FirecrawlApp(api_key='fc-bae517a8517d414a8969c0aeda3f611e')
 crawl_result = app.crawl_url(
     'https://code.kx.com/kdbai',
     params={
@@ -22,7 +22,7 @@ crawl_result = app.crawl_url(
 )
 
 # KDB.AI setup
-session = kdbai.Session(endpoint="your-kdbai-endpoint", api_key="your-kdbai-api-key")
+session = kdbai.Session(endpoint="https://cloud.kdb.ai/instance/dkdtpq6n42", api_key="2272da68ac-jWtJBh+HDZOIVT6o6BwK1MSPnilOhSNN8YGq1PBMgS/3HsdkeFhvv/hDFlgN2H3Xg6GobzC78DA42t5w")
 # our schema includes extra metadata fields in case we want to filter by them
 schema = {
     "columns": [
